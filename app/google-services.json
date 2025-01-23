@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "401535140027",
+    "project_id": "diagear-24a3f",
+    "storage_bucket": "diagear-24a3f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401535140027:android:46276b24fe6eb6bf05699e",
+        "android_client_info": {
+          "package_name": "com.example.diagearandroid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDse3UNL7-TvPYvMadVmyQODZJd1Nb-FX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401535140027:android:ef8e61255721e75705699e",
+        "android_client_info": {
+          "package_name": "hr.ferit.lukatoprek.diagear"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDse3UNL7-TvPYvMadVmyQODZJd1Nb-FX8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
