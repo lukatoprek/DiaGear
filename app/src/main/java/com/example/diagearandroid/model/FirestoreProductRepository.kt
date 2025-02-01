@@ -1,44 +1,60 @@
 package com.example.diagearandroid.model
 
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.firestore
-import dev.gitlive.firebase.initialize
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
-class FirestoreProductRepository : ProductRepository{
+class FirestoreProductRepository{
 
     private val firestore = Firebase.firestore
 
-    override fun getProducts() = flow {
-        firestore.collection("DiaGear").snapshots.collect { querySnapshot ->
-
-            val products = querySnapshot.documents.map { documentSnapshot ->
-                documentSnapshot.data<Product>()
+    fun getProducts(onSuccess: (List<Product>) -> Unit, onFailure: (Exception) -> Unit) {
+        firestore.collection("DiaGear")
+            .get()
+            .addOnSuccessListener { result ->
+                val products = result.documents.mapNotNull { it.toObject(Product::class.java) }
+                onSuccess(products)
             }
-            emit(products)
-        }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
     }
 
-    override fun getProductById(id: String) = flow {
-        firestore.collection("DiaGear").document(id).snapshots.collect { documentSnapshot ->
-            emit(documentSnapshot.data<Product>())
-        }
+    fun getProductById(id: String, onSuccess: (Product?) -> Unit, onFailure: (Exception) -> Unit) {
+        firestore.collection("DiaGear")
+            .document(id)
+            .get()
+            .addOnSuccessListener { result ->
+                val product = result.toObject(Product::class.java)
+                onSuccess(product)
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
     }
 
-    override suspend fun addProduct(product: Product) {
+    fun addProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val productDatabaseId = generateRandomStringId()
         firestore.collection("DiaGear")
             .document(productDatabaseId)
             .set(product.copy(id = productDatabaseId))
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
     }
 
-    override suspend fun updateProduct(product: Product) {
-        firestore.collection("DiaGear").document(product.id).set(product)
+    fun updateProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        firestore.collection("DiaGear")
+            .document(product.id)
+            .set(product)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
     }
 
-    override suspend fun deleteProduct(product: Product) {
-        firestore.collection("DiaGear").document(product.id).delete()
+    fun deleteProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        firestore.collection("DiaGear")
+            .document(product.id)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
     }
 
     private fun generateRandomStringId(length: Int = 20): String

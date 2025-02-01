@@ -1,8 +1,8 @@
 package com.example.diagearandroid.view
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,83 +12,94 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter
-import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.rememberAsyncImagePainter
-import coil3.request.ImageRequest
-import coil3.request.ImageResult
-import coil3.request.crossfade
-import com.example.diagearandroid.R
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.diagearandroid.model.Product
 
 @Composable
-fun ProductCard(product: Product, clicked: ()-> Unit) {
+fun ProductCard(product: Product, clicked: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable{ clicked()}
+            .clickable { clicked() }
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row (
+        Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize()
+            // Image on the left side
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(Color.Gray) // Placeholder for the image
             ) {
-                AsyncImage(
-                    model = ImageRequest
-                        .Builder(LocalContext.current)
-                        .data("https://t4.ftcdn.net/jpg/00/53/45/31/360_F_53453175_hVgYVz0WmvOXPd9CNzaUcwcibiGao3CL.jpg")
-                        .build(),
-                    contentDescription = product.name,
+                ImageView(
+                    imageUrl = product.image,
+                    description = product.name,
+                    modifier = Modifier.fillMaxSize()
                 )
-                /*
-                Text(
-                    text = product.productId,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                )
-                */
             }
-            /*
-            Spacer(modifier = Modifier.padding(horizontal = 5.dp))
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ){
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = product.manufacturer,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-                text = product.name.replaceAfter(',',"").replaceAfter(";",""),
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-            )
-            }
-            */
-        }
 
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Text content on the right side
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = product.name,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = product.manufacturer,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = product.detailedName,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun ImageView(modifier:Modifier, imageUrl:String, description:String) {
+
+    GlideImage(
+        model = imageUrl,
+        contentDescription = description,
+        modifier = Modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop
+    ) {
+        it.load(imageUrl)
     }
 }
