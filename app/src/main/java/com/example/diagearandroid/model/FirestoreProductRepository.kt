@@ -34,6 +34,7 @@ class FirestoreProductRepository{
 
     fun addProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val productDatabaseId = generateRandomStringId()
+        product.id = productDatabaseId
         firestore.collection("DiaGear")
             .document(productDatabaseId)
             .set(product.copy(id = productDatabaseId))

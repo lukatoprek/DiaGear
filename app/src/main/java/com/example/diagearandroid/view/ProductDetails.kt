@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,9 +21,11 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,7 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,7 +52,6 @@ fun ProductDetailsScreen(
     var product by remember { mutableStateOf<Product?>(null) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // Fetch product details asynchronously
     LaunchedEffect(productId) {
         repository.getProductById(
             id = productId,
@@ -65,27 +69,42 @@ fun ProductDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Dia Gear") },
+                title = {
+                    Text(
+                        text = "Product Details",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClicked) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onTertiary
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary
+                )
             )
         },
         content = { padding ->
             if (isLoading) {
-                // Show a loading indicator
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             } else if (product != null) {
-                // Show product details
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -93,12 +112,13 @@ fun ProductDetailsScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
-                    // Product Image
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
-                            .background(Color.Gray) // Placeholder for the image
+                            .height(250.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .shadow(8.dp, RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.onSurface)
                     ) {
                         ImageView(
                             imageUrl = product!!.image,
@@ -109,116 +129,129 @@ fun ProductDetailsScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Product Name
-                    Text(
-                        text = product!!.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .shadow(8.dp, RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.tertiaryContainer)
                     )
+                    {
+                        Column (
+                            modifier = Modifier.padding(16.dp)
+                        ){
+                            Text(
+                                text = product!!.name,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 24.sp,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                    // Category and Type
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "Category: ${product!!.category}",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
+                            ProductInfoRow(label = "Category", value = product!!.category)
+                            ProductInfoRow(label = "Manufacturer", value = product!!.manufacturer)
+                            ProductInfoRow(label = "HZZO ID", value = product!!.productId)
+                            ProductInfoRow(label = "Amount", value = product!!.amount)
+                            ProductInfoRow(label = "Price", value = "${product!!.price}€")
+                        }
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "Manufacturer: ${product!!.manufacturer}",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
-
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "HZZO ID: ${product!!.productId}",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "Amount: ${product!!.amount}",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = "Price: ${product!!.price}€",
-                            fontSize = 14.sp,
-                            color = Color.Gray
-                        )
-                    }
-
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(
-                        text = "Additional information",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .shadow(8.dp, RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                     )
+                    {
+                        Column (
+                            modifier = Modifier.padding(16.dp)
+                        ){
+                            Text(
+                                text = "Additional Information",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                    // Description
-                    Text(
-                        text = product!!.detailedName,
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp
-                    )
+                            Text(
+                                text = product!!.detailedName,
+                                fontSize = 14.sp,
+                                lineHeight = 20.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
 
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Additional Details
-                    Text(
-                        text = "Details",
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .shadow(8.dp, RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                     )
+                    {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Text(
+                                text = "Details",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(
-                        text = product!!.details,
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp
-                    )
+                            Text(
+                                text = product!!.details,
+                                fontSize = 14.sp,
+                                lineHeight = 20.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+
+                    }
                 }
             } else {
-                // Show an error message if the product is not found
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Product not found", color = Color.Red)
+                    Text("Product not found", color = MaterialTheme.colorScheme.error)
                 }
             }
         }
     )
+}
+
+@Composable
+fun ProductInfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Text(
+            text = "$label: ",
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = value,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
 }

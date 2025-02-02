@@ -10,7 +10,11 @@ import androidx.compose.ui.unit.dp
 import com.example.diagearandroid.model.Product
 
 @Composable
-fun ProductList(products: List<Product>, modifier: Modifier = Modifier, productClicked: (Product) -> Unit) {
+fun ProductList(
+    products: List<Product>,
+    modifier: Modifier = Modifier,
+    productClicked: (Product) -> Unit,
+) {
     LazyColumn (
         modifier = modifier
     ){
@@ -18,6 +22,30 @@ fun ProductList(products: List<Product>, modifier: Modifier = Modifier, productC
             ProductCard(product = product){
                 productClicked(product)
             }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+
+}
+
+@Composable
+fun ProductList(
+    products: List<Product>,
+    modifier: Modifier = Modifier,
+    productClicked: (Product) -> Unit,
+    onEditClicked: (Product) -> Unit,
+    onDeleteClicked: (Product) -> Unit,
+) {
+    LazyColumn (
+        modifier = modifier
+    ){
+        items(products, key = {it.id}) { product->
+            ProductCard(
+                product = product,
+                clicked = {productClicked(product)},
+                onEditClicked = {onEditClicked(product)},
+                onDeleteClicked = {onDeleteClicked(product)},
+            )
             Spacer(modifier = Modifier.height(8.dp))
         }
     }

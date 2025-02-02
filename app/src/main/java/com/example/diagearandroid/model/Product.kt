@@ -1,7 +1,7 @@
 package com.example.diagearandroid.model
 
 data class Product(
-    val id: String = "",
+    var id: String = "",
     var productId: String = "",
     var manufacturer: String = "",
     var name: String = "",
