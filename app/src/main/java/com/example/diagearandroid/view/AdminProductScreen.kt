@@ -210,7 +210,7 @@ fun EditProductDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add New Product") },
+        title = { Text("Update Product") },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState())
