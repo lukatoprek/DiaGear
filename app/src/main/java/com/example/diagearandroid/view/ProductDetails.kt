@@ -1,6 +1,5 @@
 package com.example.diagearandroid.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,42 +27,28 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.diagearandroid.model.FirestoreProductRepository
-import com.example.diagearandroid.model.Product
+import com.example.diagearandroid.viewmodel.ProductDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailsScreen(
     productId: String,
-    repository: FirestoreProductRepository,
+    viewModel: ProductDetailsViewModel,
     onBackClicked: () -> Unit
 ) {
-    var product by remember { mutableStateOf<Product?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
+    val product by viewModel.product.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(productId) {
-        repository.getProductById(
-            id = productId,
-            onSuccess = { fetchedProduct ->
-                product = fetchedProduct
-                isLoading = false
-            },
-            onFailure = { exception ->
-                Log.e("ProductDetailsScreen", "Error fetching product", exception)
-                isLoading = false
-            }
-        )
+        viewModel.loadProduct(productId)
     }
 
     Scaffold(
@@ -90,21 +75,18 @@ fun ProductDetailsScreen(
                     containerColor = MaterialTheme.colorScheme.tertiary
                 )
             )
-        },
-        content = { padding ->
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            } else if (product != null) {
+        }
+    ) { padding ->
+        when {
+            isLoading -> Box(
+                modifier = Modifier.fillMaxSize().padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            }
 
+            product != null -> {
+                val p = product!!
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -121,8 +103,8 @@ fun ProductDetailsScreen(
                             .background(MaterialTheme.colorScheme.onSurface)
                     ) {
                         ImageView(
-                            imageUrl = product!!.image,
-                            description = product!!.name,
+                            imageUrl = p.image,
+                            description = p.name,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -135,102 +117,67 @@ fun ProductDetailsScreen(
                             .clip(RoundedCornerShape(16.dp))
                             .shadow(8.dp, RoundedCornerShape(16.dp))
                             .background(MaterialTheme.colorScheme.tertiaryContainer)
-                    )
-                    {
-                        Column (
-                            modifier = Modifier.padding(16.dp)
-                        ){
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                text = product!!.name,
+                                text = p.name,
+                                style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer
                             )
-
                             Spacer(modifier = Modifier.height(8.dp))
-
-                            ProductInfoRow(label = "Category", value = product!!.category)
-                            ProductInfoRow(label = "Manufacturer", value = product!!.manufacturer)
-                            ProductInfoRow(label = "HZZO ID", value = product!!.productId)
-                            ProductInfoRow(label = "Amount", value = product!!.amount)
-                            ProductInfoRow(label = "Price", value = "${product!!.price}€")
+                            ProductInfoRow("Category", p.category)
+                            ProductInfoRow("Manufacturer", p.manufacturer)
+                            ProductInfoRow("HZZO ID", p.productId)
+                            ProductInfoRow("Amount", p.amount)
+                            ProductInfoRow("Price", "${p.price}€")
                         }
                     }
+
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .shadow(8.dp, RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                    )
-                    {
-                        Column (
-                            modifier = Modifier.padding(16.dp)
-                        ){
-                            Text(
-                                text = "Additional Information",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
+                    InfoSection(title = "Additional Information", body = p.detailedName)
 
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = product!!.detailedName,
-                                fontSize = 14.sp,
-                                lineHeight = 20.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-
-                    }
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .shadow(8.dp, RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                    )
-                    {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Text(
-                                text = "Details",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = product!!.details,
-                                fontSize = 14.sp,
-                                lineHeight = 20.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-
-                    }
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Product not found", color = MaterialTheme.colorScheme.error)
+                    InfoSection(title = "Details", body = p.details)
                 }
             }
+
+            else -> Box(
+                modifier = Modifier.fillMaxSize().padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Product not found", color = MaterialTheme.colorScheme.error)
+            }
         }
-    )
+    }
+}
+
+@Composable
+private fun InfoSection(title: String, body: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .shadow(8.dp, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
+    }
 }
 
 @Composable
@@ -243,14 +190,14 @@ fun ProductInfoRow(label: String, value: String) {
     ) {
         Text(
             text = "$label: ",
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = value,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
     }

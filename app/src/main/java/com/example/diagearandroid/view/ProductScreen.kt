@@ -1,8 +1,6 @@
 package com.example.diagearandroid.view
 
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,19 +8,25 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,68 +34,51 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.diagearandroid.R
 import com.example.diagearandroid.Routes
-import com.example.diagearandroid.model.FirestoreProductRepository
-import com.example.diagearandroid.model.Product
+import com.example.diagearandroid.viewmodel.ProductListViewModel
 
 @Composable
-fun ProductScreen(repository: FirestoreProductRepository, navigation: NavHostController) {
-    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var selectedCategory by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        repository.getProducts(
-            onSuccess = { productList ->
-                products = productList
-                isLoading = false
-            },
-            onFailure = { exception ->
-                Log.e("ProductScreen", "Error fetching products", exception)
-                isLoading = false
-            }
-        )
-    }
-
-    val filteredProducts = if (selectedCategory != null) {
-        products.filter { it.category == selectedCategory }
-    } else {
-        products
-    }
+fun ProductScreen(viewModel: ProductListViewModel, navigation: NavHostController) {
+    val products by viewModel.displayedProducts.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
 
     ProductScreenContent(
-        products = filteredProducts,
+        products = products,
         isLoading = isLoading,
-        navigation = navigation,
+        searchQuery = searchQuery,
         selectedCategory = selectedCategory,
-        onCategorySelected = { category -> selectedCategory = category }
+        onSearchQueryChange = { viewModel.setSearchQuery(it) },
+        onCategorySelected = { viewModel.setCategory(it) },
+        navigation = navigation
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductScreenContent(
-    products: List<Product>,
+    products: List<com.example.diagearandroid.model.Product>,
     isLoading: Boolean,
-    navigation: NavHostController,
+    searchQuery: String,
     selectedCategory: String?,
-    onCategorySelected: (String?) -> Unit
+    onSearchQueryChange: (String) -> Unit,
+    onCategorySelected: (String?) -> Unit,
+    navigation: NavHostController
 ) {
     Scaffold(
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             CenterAlignedTopAppBar(
-                {
-                    Box(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                expandedHeight = 70.dp,
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ),
+                title = {
+                    Image(
+                        painter = painterResource(id = R.drawable.diagear_logo),
+                        contentDescription = "Logo",
+                        modifier = Modifier.fillMaxSize()
                     )
-                    {
-
-                        Image(
-                            painter = painterResource(id = R.drawable.diagear_logo),
-                            contentDescription = "Logo",
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
                 }
             )
         }
@@ -101,7 +88,11 @@ fun ProductScreenContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            FilteringChips(selectedCategory,onCategorySelected)
+            ProductSearchBar(
+                query = searchQuery,
+                onQueryChange = onSearchQueryChange
+            )
+            FilteringChips(selectedCategory, onCategorySelected)
 
             if (isLoading) {
                 Box(
@@ -125,6 +116,28 @@ fun ProductScreenContent(
 }
 
 @Composable
+fun ProductSearchBar(query: String, onQueryChange: (String) -> Unit) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text("Search by name or HZZO ID…") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChange("") }) {
+                    Icon(Icons.Default.Clear, contentDescription = "Clear search")
+                }
+            }
+        },
+        shape = RoundedCornerShape(50),
+        singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
 fun FilteringChips(
     selectedCategory: String?,
     onCategorySelected: (String?) -> Unit
@@ -132,39 +145,16 @@ fun FilteringChips(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.Center,
     ) {
-        FilterChip(
-            selected = selectedCategory == null,
-            onClick = { onCategorySelected(null) },
-            label = { Text("All") },
-            modifier = Modifier
-                .padding(start = 4.dp, end = 4.dp)
-        )
-
-        FilterChip(
-            selected = selectedCategory == "IIB",
-            onClick = { onCategorySelected("IIB") },
-            label = { Text("IIB") },
-            modifier = Modifier
-                .padding(start = 4.dp, end = 4.dp)
-        )
-
-        FilterChip(
-            selected = selectedCategory == "IVD",
-            onClick = { onCategorySelected("IVD") },
-            label = { Text("IVD") },
-            modifier = Modifier
-                .padding(start = 4.dp, end = 4.dp)
-        )
-
-        FilterChip(
-            selected = selectedCategory == "IIa",
-            onClick = { onCategorySelected("IIa") },
-            label = { Text("IIa") },
-            modifier = Modifier
-                .padding(start = 4.dp, end = 4.dp)
-        )
+        listOf(null to "All", "IIB" to "IIB", "IVD" to "IVD", "IIa" to "IIa").forEach { (value, label) ->
+            FilterChip(
+                selected = selectedCategory == value,
+                onClick = { onCategorySelected(value) },
+                label = { Text(label) },
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+        }
     }
 }

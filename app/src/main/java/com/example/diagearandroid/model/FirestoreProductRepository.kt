@@ -2,68 +2,52 @@ package com.example.diagearandroid.model
 
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class FirestoreProductRepository{
+class FirestoreProductRepository {
 
     private val firestore = Firebase.firestore
 
-    fun getProducts(onSuccess: (List<Product>) -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("DiaGear")
-            .get()
+    suspend fun getProducts(): List<Product> = suspendCancellableCoroutine { cont ->
+        firestore.collection("DiaGear").get()
             .addOnSuccessListener { result ->
-                val products = result.documents.mapNotNull { it.toObject(Product::class.java) }
-                onSuccess(products)
+                cont.resume(result.documents.mapNotNull { it.toObject(Product::class.java) })
             }
-            .addOnFailureListener { exception ->
-                onFailure(exception)
-            }
+            .addOnFailureListener { cont.resumeWithException(it) }
     }
 
-    fun getProductById(id: String, onSuccess: (Product?) -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("DiaGear")
-            .document(id)
-            .get()
+    suspend fun getProductById(id: String): Product? = suspendCancellableCoroutine { cont ->
+        firestore.collection("DiaGear").document(id).get()
             .addOnSuccessListener { result ->
-                val product = result.toObject(Product::class.java)
-                onSuccess(product)
+                cont.resume(result.toObject(Product::class.java))
             }
-            .addOnFailureListener { exception ->
-                onFailure(exception)
-            }
+            .addOnFailureListener { cont.resumeWithException(it) }
     }
 
-    fun addProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val productDatabaseId = generateRandomStringId()
-        product.id = productDatabaseId
-        firestore.collection("DiaGear")
-            .document(productDatabaseId)
-            .set(product.copy(id = productDatabaseId))
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { exception -> onFailure(exception) }
+    suspend fun addProduct(product: Product): Unit = suspendCancellableCoroutine { cont ->
+        val newId = generateRandomStringId()
+        val withId = product.copy(id = newId)
+        firestore.collection("DiaGear").document(newId).set(withId)
+            .addOnSuccessListener { cont.resume(Unit) }
+            .addOnFailureListener { cont.resumeWithException(it) }
     }
 
-    fun updateProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("DiaGear")
-            .document(product.id)
-            .set(product)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { exception -> onFailure(exception) }
+    suspend fun updateProduct(product: Product): Unit = suspendCancellableCoroutine { cont ->
+        firestore.collection("DiaGear").document(product.id).set(product)
+            .addOnSuccessListener { cont.resume(Unit) }
+            .addOnFailureListener { cont.resumeWithException(it) }
     }
 
-    fun deleteProduct(product: Product, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        firestore.collection("DiaGear")
-            .document(product.id)
-            .delete()
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { exception -> onFailure(exception) }
+    suspend fun deleteProduct(product: Product): Unit = suspendCancellableCoroutine { cont ->
+        firestore.collection("DiaGear").document(product.id).delete()
+            .addOnSuccessListener { cont.resume(Unit) }
+            .addOnFailureListener { cont.resumeWithException(it) }
     }
 
-    private fun generateRandomStringId(length: Int = 20): String
-    {
+    private fun generateRandomStringId(length: Int = 20): String {
         val allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        return(1..length)
-            .map { allowedChars.random() }
-            .joinToString("")
+        return (1..length).map { allowedChars.random() }.joinToString("")
     }
-
 }

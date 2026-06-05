@@ -99,7 +99,7 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .shadow(8.dp, shape = CircleShape)
-                            .background(Color(0xFFF7F7FF), CircleShape)
+                            .background(Color.White, CircleShape)
                             .padding(16.dp)
                     ) {
                         Image(

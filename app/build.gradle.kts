@@ -53,8 +53,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.glide)
     implementation(libs.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.google.firebase.firestore)
+    implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
