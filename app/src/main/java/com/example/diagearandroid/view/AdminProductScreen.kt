@@ -1,5 +1,10 @@
 package com.example.diagearandroid.view
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,9 +40,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import com.example.diagearandroid.R
 import com.example.diagearandroid.Routes
@@ -49,6 +57,8 @@ fun AdminProductScreen(
     viewModel: AdminProductViewModel,
     navigation: NavHostController,
 ) {
+    RequestNotificationPermission()
+
     val products by viewModel.displayedProducts.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -66,6 +76,29 @@ fun AdminProductScreen(
         onEditProductClicked = { product -> viewModel.showEditDialog(product) },
         deleteProduct = { product -> viewModel.deleteProduct(product) }
     )
+}
+
+/**
+ * Requests the POST_NOTIFICATIONS runtime permission once when the admin screen opens.
+ * Only needed on Android 13+ (it is granted at install time below API 33).
+ */
+@Composable
+private fun RequestNotificationPermission() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* Result ignored — notifications simply no-op if denied. */ }
+
+    LaunchedEffect(Unit) {
+        val granted = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!granted) {
+            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

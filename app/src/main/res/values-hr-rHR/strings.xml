@@ -72,4 +72,14 @@
     <!-- Language names (shown as endonyms in both locales) -->
     <string name="language_english">English</string>
     <string name="language_croatian">Hrvatski</string>
+
+    <!-- Product change notifications -->
+    <string name="notif_channel_name">Promjene proizvoda</string>
+    <string name="notif_channel_desc">Obavijesti kada se proizvodi dodaju, urede ili uklone</string>
+    <string name="notif_product_added_title">Proizvod dodan</string>
+    <string name="notif_product_added_text">%1$s je dodan.</string>
+    <string name="notif_product_updated_title">Proizvod ažuriran</string>
+    <string name="notif_product_updated_text">%1$s je ažuriran.</string>
+    <string name="notif_product_deleted_title">Proizvod izbrisan</string>
+    <string name="notif_product_deleted_text">%1$s je izbrisan.</string>
 </resources>

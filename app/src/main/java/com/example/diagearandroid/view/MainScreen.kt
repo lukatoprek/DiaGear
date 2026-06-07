@@ -52,8 +52,6 @@ fun MainScreen(repository: FirestoreProductRepository, navigation: NavHostContro
             }
         }
     ) { innerPadding ->
-        // Only apply bottom padding — the inner TopAppBar owns the status bar area.
-        // Applying top padding here too would double-apply the status bar inset.
         Box(modifier = Modifier.fillMaxSize().padding(bottom = innerPadding.calculateBottomPadding())) {
             when (selectedTab) {
                 0 -> ProductScreen(viewModel = productViewModel, navigation = navigation)

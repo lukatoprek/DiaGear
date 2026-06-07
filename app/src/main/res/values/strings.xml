@@ -71,4 +71,14 @@
     <!-- Language names (shown as endonyms in both locales) -->
     <string name="language_english">English</string>
     <string name="language_croatian">Hrvatski</string>
+
+    <!-- Product change notifications -->
+    <string name="notif_channel_name">Product changes</string>
+    <string name="notif_channel_desc">Notifications when products are added, edited, or removed</string>
+    <string name="notif_product_added_title">Product added</string>
+    <string name="notif_product_added_text">%1$s was added.</string>
+    <string name="notif_product_updated_title">Product updated</string>
+    <string name="notif_product_updated_text">%1$s was updated.</string>
+    <string name="notif_product_deleted_title">Product deleted</string>
+    <string name="notif_product_deleted_text">%1$s was deleted.</string>
 </resources>

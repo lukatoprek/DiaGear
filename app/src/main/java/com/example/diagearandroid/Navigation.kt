@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -78,8 +79,9 @@ fun NavigationController(repository: FirestoreProductRepository) {
         }
 
         composable(Routes.SCREEN_ADMIN_ALL_PRODUCTS) {
+            val context = LocalContext.current
             val viewModel: AdminProductViewModel = viewModel(
-                factory = AdminProductViewModel.provideFactory(repository)
+                factory = AdminProductViewModel.provideFactory(repository, context)
             )
             val dialogState by viewModel.dialogState.collectAsState()
             val addForm by viewModel.addForm.collectAsState()

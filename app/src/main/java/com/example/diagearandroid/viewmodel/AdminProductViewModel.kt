@@ -1,10 +1,12 @@
 package com.example.diagearandroid.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.diagearandroid.model.FirestoreProductRepository
 import com.example.diagearandroid.model.Product
+import com.example.diagearandroid.util.ProductNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +47,10 @@ fun Product.toForm() = ProductForm(
     details = details
 )
 
-class AdminProductViewModel(private val repository: FirestoreProductRepository) : ViewModel() {
+class AdminProductViewModel(
+    private val repository: FirestoreProductRepository,
+    private val appContext: Context,
+) : ViewModel() {
 
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     private val _isLoading = MutableStateFlow(true)
@@ -114,6 +119,7 @@ class AdminProductViewModel(private val repository: FirestoreProductRepository) 
         viewModelScope.launch {
             try {
                 repository.addProduct(product)
+                ProductNotifier.notify(appContext, ProductNotifier.Action.ADDED, product.name)
                 _addForm.update { ProductForm() }
                 loadProducts()
                 dismissDialog()
@@ -126,6 +132,7 @@ class AdminProductViewModel(private val repository: FirestoreProductRepository) 
         viewModelScope.launch {
             try {
                 repository.updateProduct(product)
+                ProductNotifier.notify(appContext, ProductNotifier.Action.UPDATED, product.name)
                 loadProducts()
                 dismissDialog()
             } catch (_: Exception) {
@@ -137,6 +144,7 @@ class AdminProductViewModel(private val repository: FirestoreProductRepository) 
         viewModelScope.launch {
             try {
                 repository.deleteProduct(product)
+                ProductNotifier.notify(appContext, ProductNotifier.Action.DELETED, product.name)
                 loadProducts()
             } catch (_: Exception) {
             }
@@ -144,11 +152,14 @@ class AdminProductViewModel(private val repository: FirestoreProductRepository) 
     }
 
     companion object {
-        fun provideFactory(repository: FirestoreProductRepository): ViewModelProvider.Factory =
+        fun provideFactory(
+            repository: FirestoreProductRepository,
+            context: Context,
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                    AdminProductViewModel(repository) as T
+                    AdminProductViewModel(repository, context.applicationContext) as T
             }
     }
 }
