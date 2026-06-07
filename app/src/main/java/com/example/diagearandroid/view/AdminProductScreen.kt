@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.diagearandroid.R
@@ -91,7 +92,7 @@ fun AdminProductScreenContent(
                 title = {
                     Image(
                         painter = painterResource(id = R.drawable.diagear_logo),
-                        contentDescription = "Logo",
+                        contentDescription = stringResource(R.string.cd_logo),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -99,7 +100,7 @@ fun AdminProductScreenContent(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddProductClicked) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.action_add))
             }
         },
         floatingActionButtonPosition = FabPosition.Center
@@ -160,30 +161,30 @@ fun EditProductDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Update Product") },
+        title = { Text(stringResource(R.string.update_product_title)) },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                ProductFormField("Product ID", form.productId, isProductIdError, "Product ID is required") {
+                ProductFormField(stringResource(R.string.field_product_id), form.productId, isProductIdError, stringResource(R.string.error_product_id_required)) {
                     onFormUpdate(form.copy(productId = it)); isProductIdError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Manufacturer", form.manufacturer, isManufacturerError, "Manufacturer is required") {
+                ProductFormField(stringResource(R.string.field_manufacturer), form.manufacturer, isManufacturerError, stringResource(R.string.error_manufacturer_required)) {
                     onFormUpdate(form.copy(manufacturer = it)); isManufacturerError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Name", form.name, isNameError, "Name is required") {
+                ProductFormField(stringResource(R.string.field_name), form.name, isNameError, stringResource(R.string.error_name_required)) {
                     onFormUpdate(form.copy(name = it)); isNameError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Detailed Name", form.detailedName, isDetailedNameError, "Detailed Name is required") {
+                ProductFormField(stringResource(R.string.field_detailed_name), form.detailedName, isDetailedNameError, stringResource(R.string.error_detailed_name_required)) {
                     onFormUpdate(form.copy(detailedName = it)); isDetailedNameError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Category", form.category, isCategoryError, "Category is required") {
+                ProductFormField(stringResource(R.string.field_category), form.category, isCategoryError, stringResource(R.string.error_category_required)) {
                     onFormUpdate(form.copy(category = it)); isCategoryError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Amount", form.amount, isAmountError, "Amount is required") {
+                ProductFormField(stringResource(R.string.field_amount), form.amount, isAmountError, stringResource(R.string.error_amount_required)) {
                     onFormUpdate(form.copy(amount = it)); isAmountError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -193,21 +194,21 @@ fun EditProductDialog(
                         onFormUpdate(form.copy(price = it))
                         isPriceError = it.toDoubleOrNull() == null
                     },
-                    label = { Text("Price") },
+                    label = { Text(stringResource(R.string.field_price)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = isPriceError,
-                    supportingText = { if (isPriceError) Text("Price must be a valid number") }
+                    supportingText = { if (isPriceError) Text(stringResource(R.string.error_price_invalid)) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Use Within", form.useWithin, isUseWithinError, "Use Within is required") {
+                ProductFormField(stringResource(R.string.field_use_within), form.useWithin, isUseWithinError, stringResource(R.string.error_use_within_required)) {
                     onFormUpdate(form.copy(useWithin = it)); isUseWithinError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Image URL", form.image, isImageError, "Image URL is required") {
+                ProductFormField(stringResource(R.string.field_image_url), form.image, isImageError, stringResource(R.string.error_image_url_required)) {
                     onFormUpdate(form.copy(image = it)); isImageError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Details", form.details, isDetailsError, "Details are required", maxLines = 3) {
+                ProductFormField(stringResource(R.string.field_details), form.details, isDetailsError, stringResource(R.string.error_details_required), maxLines = 3) {
                     onFormUpdate(form.copy(details = it)); isDetailsError = it.isEmpty()
                 }
             }
@@ -245,9 +246,9 @@ fun EditProductDialog(
                         )
                     )
                 }
-            }) { Text("Update") }
+            }) { Text(stringResource(R.string.action_update)) }
         },
-        dismissButton = { Button(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { Button(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
     )
 }
 
@@ -271,30 +272,30 @@ fun AddProductDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add New Product") },
+        title = { Text(stringResource(R.string.add_product_title)) },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                ProductFormField("Product ID", form.productId, isProductIdError, "Product ID is required") {
+                ProductFormField(stringResource(R.string.field_product_id), form.productId, isProductIdError, stringResource(R.string.error_product_id_required)) {
                     onFormUpdate(form.copy(productId = it)); isProductIdError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Manufacturer", form.manufacturer, isManufacturerError, "Manufacturer is required") {
+                ProductFormField(stringResource(R.string.field_manufacturer), form.manufacturer, isManufacturerError, stringResource(R.string.error_manufacturer_required)) {
                     onFormUpdate(form.copy(manufacturer = it)); isManufacturerError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Name", form.name, isNameError, "Name is required") {
+                ProductFormField(stringResource(R.string.field_name), form.name, isNameError, stringResource(R.string.error_name_required)) {
                     onFormUpdate(form.copy(name = it)); isNameError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Detailed Name", form.detailedName, isDetailedNameError, "Detailed Name is required") {
+                ProductFormField(stringResource(R.string.field_detailed_name), form.detailedName, isDetailedNameError, stringResource(R.string.error_detailed_name_required)) {
                     onFormUpdate(form.copy(detailedName = it)); isDetailedNameError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Category", form.category, isCategoryError, "Category is required") {
+                ProductFormField(stringResource(R.string.field_category), form.category, isCategoryError, stringResource(R.string.error_category_required)) {
                     onFormUpdate(form.copy(category = it)); isCategoryError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Amount", form.amount, isAmountError, "Amount is required") {
+                ProductFormField(stringResource(R.string.field_amount), form.amount, isAmountError, stringResource(R.string.error_amount_required)) {
                     onFormUpdate(form.copy(amount = it)); isAmountError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -304,21 +305,21 @@ fun AddProductDialog(
                         onFormUpdate(form.copy(price = it))
                         isPriceError = it.toDoubleOrNull() == null
                     },
-                    label = { Text("Price") },
+                    label = { Text(stringResource(R.string.field_price)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = isPriceError,
-                    supportingText = { if (isPriceError) Text("Price must be a valid number") }
+                    supportingText = { if (isPriceError) Text(stringResource(R.string.error_price_invalid)) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Use Within", form.useWithin, isUseWithinError, "Use Within is required") {
+                ProductFormField(stringResource(R.string.field_use_within), form.useWithin, isUseWithinError, stringResource(R.string.error_use_within_required)) {
                     onFormUpdate(form.copy(useWithin = it)); isUseWithinError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Image URL", form.image, isImageError, "Image URL is required") {
+                ProductFormField(stringResource(R.string.field_image_url), form.image, isImageError, stringResource(R.string.error_image_url_required)) {
                     onFormUpdate(form.copy(image = it)); isImageError = it.isEmpty()
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                ProductFormField("Details", form.details, isDetailsError, "Details are required", maxLines = 3) {
+                ProductFormField(stringResource(R.string.field_details), form.details, isDetailsError, stringResource(R.string.error_details_required), maxLines = 3) {
                     onFormUpdate(form.copy(details = it)); isDetailsError = it.isEmpty()
                 }
             }
@@ -355,9 +356,9 @@ fun AddProductDialog(
                         )
                     )
                 }
-            }) { Text("Add") }
+            }) { Text(stringResource(R.string.action_add)) }
         },
-        dismissButton = { Button(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { Button(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
     )
 }
 

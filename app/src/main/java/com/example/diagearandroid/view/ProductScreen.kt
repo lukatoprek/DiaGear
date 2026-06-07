@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.diagearandroid.R
@@ -76,7 +77,7 @@ fun ProductScreenContent(
                 title = {
                     Image(
                         painter = painterResource(id = R.drawable.diagear_logo),
-                        contentDescription = "Logo",
+                        contentDescription = stringResource(R.string.cd_logo),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -120,12 +121,12 @@ fun ProductSearchBar(query: String, onQueryChange: (String) -> Unit) {
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
-        placeholder = { Text("Search by name or HZZO ID…") },
+        placeholder = { Text(stringResource(R.string.search_placeholder)) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Default.Clear, contentDescription = "Clear search")
+                    Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.cd_clear_search))
                 }
             }
         },
@@ -148,7 +149,7 @@ fun FilteringChips(
             .padding(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.Center,
     ) {
-        listOf(null to "All", "IIB" to "IIB", "IVD" to "IVD", "IIa" to "IIa").forEach { (value, label) ->
+        listOf(null to stringResource(R.string.filter_all), "IIB" to "IIB", "IVD" to "IVD", "IIa" to "IIa").forEach { (value, label) ->
             FilterChip(
                 selected = selectedCategory == value,
                 onClick = { onCategorySelected(value) },

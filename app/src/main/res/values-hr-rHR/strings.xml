@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DiaGear</string>
+
+    <!-- Home screen -->
+    <string name="home_title">Dobrodošli u DiaGear</string>
+    <string name="home_tagline">Pronađite dijabetičke proizvode pokrivene hrvatskim zdravstvenim osiguranjem — sve na jednom mjestu!</string>
+    <string name="home_view_products">Pregledaj proizvode</string>
+    <string name="cd_language_selector">Odaberi jezik</string>
+    <string name="cd_logo">Logotip</string>
+
+    <!-- Admin login -->
+    <string name="admin_login">Prijava administratora</string>
+    <string name="field_username">Korisničko ime</string>
+    <string name="error_username_required">Korisničko ime je obavezno</string>
+    <string name="field_password">Lozinka</string>
+    <string name="error_password_required">Lozinka je obavezna</string>
+    <string name="error_all_fields_required">Sva polja su obavezna</string>
+    <string name="error_incorrect_credentials">Netočni podaci za prijavu</string>
+
+    <!-- Common actions -->
+    <string name="action_login">Prijava</string>
+    <string name="action_cancel">Odustani</string>
+    <string name="action_add">Dodaj</string>
+    <string name="action_update">Ažuriraj</string>
+    <string name="cd_edit">Uredi</string>
+    <string name="cd_delete">Izbriši</string>
+    <string name="cd_back">Natrag</string>
+    <string name="cd_clear_search">Očisti pretragu</string>
+
+    <!-- Product list / search / filter -->
+    <string name="search_placeholder">Pretraži po nazivu ili HZZO ID-u…</string>
+    <string name="filter_all">Sve</string>
+
+    <!-- Add / edit product form -->
+    <string name="add_product_title">Dodaj novi proizvod</string>
+    <string name="update_product_title">Ažuriraj proizvod</string>
+    <string name="field_product_id">ID proizvoda</string>
+    <string name="error_product_id_required">ID proizvoda je obavezan</string>
+    <string name="field_manufacturer">Proizvođač</string>
+    <string name="error_manufacturer_required">Proizvođač je obavezan</string>
+    <string name="field_name">Naziv</string>
+    <string name="error_name_required">Naziv je obavezan</string>
+    <string name="field_detailed_name">Detaljan naziv</string>
+    <string name="error_detailed_name_required">Detaljan naziv je obavezan</string>
+    <string name="field_category">Kategorija</string>
+    <string name="error_category_required">Kategorija je obavezna</string>
+    <string name="field_amount">Količina</string>
+    <string name="error_amount_required">Količina je obavezna</string>
+    <string name="field_price">Cijena</string>
+    <string name="error_price_invalid">Cijena mora biti valjan broj</string>
+    <string name="field_use_within">Rok uporabe</string>
+    <string name="error_use_within_required">Rok uporabe je obavezan</string>
+    <string name="field_image_url">URL slike</string>
+    <string name="error_image_url_required">URL slike je obavezan</string>
+    <string name="field_details">Detalji</string>
+    <string name="error_details_required">Detalji su obavezni</string>
+
+    <!-- Product details -->
+    <string name="product_details_title">Detalji proizvoda</string>
+    <string name="label_hzzo_id">HZZO ID</string>
+    <string name="section_additional_info">Dodatne informacije</string>
+    <string name="product_not_found">Proizvod nije pronađen</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_products">Proizvodi</string>
+    <string name="nav_map">Karta</string>
+
+    <!-- Map -->
+    <string name="location_permission_required">Za pronalazak obližnjih ljekarni potrebno je dopuštenje za lokaciju.</string>
+
+    <!-- Language names (shown as endonyms in both locales) -->
+    <string name="language_english">English</string>
+    <string name="language_croatian">Hrvatski</string>
+</resources>

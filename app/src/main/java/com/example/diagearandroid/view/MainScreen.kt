@@ -18,8 +18,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.diagearandroid.R
 import com.example.diagearandroid.model.FirestoreProductRepository
 import com.example.diagearandroid.viewmodel.MapViewModel
 import com.example.diagearandroid.viewmodel.ProductListViewModel
@@ -39,13 +41,13 @@ fun MainScreen(repository: FirestoreProductRepository, navigation: NavHostContro
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
                     icon = { Icon(Icons.Default.Menu, contentDescription = null) },
-                    label = { Text("Products") }
+                    label = { Text(stringResource(R.string.nav_products)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
                     icon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
-                    label = { Text("Map") }
+                    label = { Text(stringResource(R.string.nav_map)) }
                 )
             }
         }

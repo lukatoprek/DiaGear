@@ -33,9 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.example.diagearandroid.R
 import com.example.diagearandroid.model.Pharmacy
 import com.example.diagearandroid.viewmodel.MapViewModel
 import com.google.android.gms.location.LocationServices
@@ -95,7 +97,7 @@ fun MapScreen(viewModel: MapViewModel) {
     if (!hasPermission) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                text = "Location permission is required to find nearby pharmacies.",
+                text = stringResource(R.string.location_permission_required),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(32.dp)
             )

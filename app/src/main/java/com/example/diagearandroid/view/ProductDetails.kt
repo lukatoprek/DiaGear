@@ -33,8 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.diagearandroid.R
 import com.example.diagearandroid.viewmodel.ProductDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +58,7 @@ fun ProductDetailsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Product Details",
+                        text = stringResource(R.string.product_details_title),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onTertiary,
                         fontWeight = FontWeight.Bold
@@ -66,7 +68,7 @@ fun ProductDetailsScreen(
                     IconButton(onClick = onBackClicked) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.cd_back),
                             tint = MaterialTheme.colorScheme.onTertiary
                         )
                     }
@@ -126,21 +128,21 @@ fun ProductDetailsScreen(
                                 color = MaterialTheme.colorScheme.onTertiaryContainer
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            ProductInfoRow("Category", p.category)
-                            ProductInfoRow("Manufacturer", p.manufacturer)
-                            ProductInfoRow("HZZO ID", p.productId)
-                            ProductInfoRow("Amount", p.amount)
-                            ProductInfoRow("Price", "${p.price}€")
+                            ProductInfoRow(stringResource(R.string.field_category), p.category)
+                            ProductInfoRow(stringResource(R.string.field_manufacturer), p.manufacturer)
+                            ProductInfoRow(stringResource(R.string.label_hzzo_id), p.productId)
+                            ProductInfoRow(stringResource(R.string.field_amount), p.amount)
+                            ProductInfoRow(stringResource(R.string.field_price), "${p.price}€")
                         }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    InfoSection(title = "Additional Information", body = p.detailedName)
+                    InfoSection(title = stringResource(R.string.section_additional_info), body = p.detailedName)
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    InfoSection(title = "Details", body = p.details)
+                    InfoSection(title = stringResource(R.string.field_details), body = p.details)
                 }
             }
 
@@ -148,7 +150,7 @@ fun ProductDetailsScreen(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Product not found", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.product_not_found), color = MaterialTheme.colorScheme.error)
             }
         }
     }
