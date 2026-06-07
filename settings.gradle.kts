@@ -20,5 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "DiaGear"
-include(":app")
- 
+include(":app") 
